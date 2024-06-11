@@ -20,14 +20,14 @@ def load_images_and_labels(localized_dir, delocalized_dir):
             img_path = os.path.join(localized_dir, filename)
             img = Image.open(img_path).convert('L')
             data.append(np.array(img))
-            labels.append(0)  # Localized label
+            labels.append(1)  # Localized label
 
     for filename in os.listdir(delocalized_dir):
         if filename.endswith('.png'):
             img_path = os.path.join(delocalized_dir, filename)
             img = Image.open(img_path).convert('L')
             data.append(np.array(img))
-            labels.append(1)  # Delocalized label
+            labels.append(0)  # Delocalized label
 
     return np.array(data), np.array(labels)
 
@@ -162,7 +162,7 @@ def evaluate_model(model, val_loader, criterion):
     return val_loss, val_acc
 
 # Train the model
-num_epochs = 1
+num_epochs = 2
 train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs)
 
 # Load the best model
