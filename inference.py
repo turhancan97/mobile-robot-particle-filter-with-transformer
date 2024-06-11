@@ -34,18 +34,50 @@ transform = transforms.Compose([
 ])
 
 # Function to generate particle image (same as used during training)
-def generate_particle_image(particles, img_size=256*2):
+# def generate_particle_image(particles, img_size=256*2):
+#     img = Image.new('L', (img_size, img_size), 0)
+#     draw = ImageDraw.Draw(img)
+#     for p in particles:
+#         x = int(p.x / world_size * img_size)
+#         y = int(p.y / world_size * img_size)
+#         draw.point((x, y), fill=255)
+#     return np.array(img)
+
+def generate_particle_image(particles, img_size=36, world_size=100, s=1.5):
+    # Compute mean position and orientation
+    mean_x = np.mean([p.x for p in particles])
+    mean_y = np.mean([p.y for p in particles])
+    mean_yaw = np.mean([p.yaw for p in particles])
+
+    # Create a blank image
     img = Image.new('L', (img_size, img_size), 0)
     draw = ImageDraw.Draw(img)
+    
+    # Calculate scale factor to convert world coordinates to image coordinates
+    scale_factor = img_size / s
+    
     for p in particles:
-        x = int(p.x / world_size * img_size)
-        y = int(p.y / world_size * img_size)
-        draw.point((x, y), fill=255)
+        # Transform particle coordinates to the image frame
+        dx = p.x - mean_x
+        dy = p.y - mean_y
+        
+        # Rotate the coordinates based on the mean orientation
+        x_rot = dx * np.cos(mean_yaw) + dy * np.sin(mean_yaw)
+        y_rot = -dx * np.sin(mean_yaw) + dy * np.cos(mean_yaw)
+        
+        # Scale and translate to the center of the image
+        x_img = int((x_rot * scale_factor) + (img_size / 2))
+        y_img = int((y_rot * scale_factor) + (img_size / 2))
+        
+        # Draw the particle on the image
+        if 0 <= x_img < img_size and 0 <= y_img < img_size:
+            draw.point((x_img, y_img), fill=255)
+    
     return np.array(img)
 
 # Function to perform inference
 def infer(model, particles):
-    particle_image = generate_particle_image(particles)
+    particle_image = generate_particle_image(particles, img_size = 224, world_size=100, s=1.5)
     particle_image = transform(particle_image).unsqueeze(0).to(device).float()
     with torch.no_grad():
         outputs = model(particle_image)
