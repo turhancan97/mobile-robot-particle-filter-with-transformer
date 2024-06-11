@@ -1,10 +1,14 @@
 import os
 import numpy as np
+from tqdm import tqdm
 from PIL import Image
 from sklearn.model_selection import train_test_split
 import torch
+import torch.nn as nn
+import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
+import timm
 
 # Directories for localized and delocalized images
 localized_dir = 'training_data/Localized'
@@ -72,12 +76,6 @@ test_dataset = ParticleDataset(X_test, y_test, transform=transform)
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
-
-import timm
-import torch
-import torch.nn as nn
-import torch.optim as optim
-from tqdm import tqdm
 
 # Define the Vision Transformer model
 class ViTClassifier(nn.Module):
