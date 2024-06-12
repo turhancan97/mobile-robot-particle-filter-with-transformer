@@ -44,6 +44,9 @@ transform = transforms.Compose([
 #     return np.array(img)
 
 def generate_particle_image(particles, img_size=36, world_size=100, s=1.5):
+    '''
+    Generate training data for the localization task to be consistent with the training data (same as used during data generation)
+    '''
     # Compute mean position and orientation
     mean_x = np.mean([p.x for p in particles])
     mean_y = np.mean([p.y for p in particles])
@@ -77,6 +80,9 @@ def generate_particle_image(particles, img_size=36, world_size=100, s=1.5):
 
 # Function to perform inference
 def infer(model, particles):
+    '''
+    Perform inference using the trained model
+    '''
     particle_image = generate_particle_image(particles, img_size = 224, world_size=100, s=1.5)
     particle_image = transform(particle_image).unsqueeze(0).to(device).float()
     with torch.no_grad():

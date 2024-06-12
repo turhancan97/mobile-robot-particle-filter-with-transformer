@@ -1,7 +1,7 @@
 import random
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-from Robot import Robot, resample, world_size, landmarks, N
+from Robot import Robot, resample, world_size, landmarks, N # Import Robot class and resample function from Robot.py file
 
 
 fig, ax = plt.subplots()  # for animation
@@ -44,6 +44,7 @@ def animate(_):
 
 
 def init():
+    '''Initialize the plot'''
     ax.set_xlim(0, world_size)
     ax.set_ylim(0, world_size)
     ax.set_xlabel("x [m]")

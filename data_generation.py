@@ -20,7 +20,8 @@ beta = pi / 2  # Orientation threshold in radians
 #     return np.array(img)
 
 def generate_particle_image(particles, img_size=36, world_size=100, s=1.5):
-    # Compute mean position and orientation
+
+    # Compute mean position and orientation of the particles
     mean_x = np.mean([p.x for p in particles])
     mean_y = np.mean([p.y for p in particles])
     mean_yaw = np.mean([p.yaw for p in particles])
@@ -32,6 +33,7 @@ def generate_particle_image(particles, img_size=36, world_size=100, s=1.5):
     # Calculate scale factor to convert world coordinates to image coordinates
     scale_factor = img_size / s
     
+    # Draw each particle on the image
     for p in particles:
         # Transform particle coordinates to the image frame
         dx = p.x - mean_x
@@ -52,12 +54,18 @@ def generate_particle_image(particles, img_size=36, world_size=100, s=1.5):
     return np.array(img)
 
 def estimate_pose(particles):
+    '''
+    Estimate the average pose of the particles
+    '''
     x_est = np.mean([p.x for p in particles])
     y_est = np.mean([p.y for p in particles])
     yaw_est = np.mean([p.yaw for p in particles])
     return x_est, y_est, yaw_est
 
 def label_data(x_GT, y_GT, theta_GT, x_PF, y_PF, theta_PF, alpha, beta):
+    '''
+    Label the data as localized or delocalized based on the distance and orientation
+    '''
     dist = sqrt((x_GT - x_PF) ** 2 + (y_GT - y_PF) ** 2)
     orient_diff = abs(theta_GT - theta_PF)
     if dist < alpha and orient_diff < beta:
@@ -66,6 +74,9 @@ def label_data(x_GT, y_GT, theta_GT, x_PF, y_PF, theta_PF, alpha, beta):
         return 0  # Delocalized
 
 def generate_training_data(robot, particles, num_samples, alpha, beta):
+    '''
+    Generate training data for the localization task
+    '''
     data = []
     for _ in range(num_samples):
         # Move robot and particles

@@ -16,6 +16,9 @@ delocalized_dir = 'training_data/Delocalized'
 
 # Load images and labels
 def load_images_and_labels(localized_dir, delocalized_dir):
+    '''
+    Load images and labels from the localized and delocalized directories
+    '''
     data = []
     labels = []
     
@@ -35,7 +38,7 @@ def load_images_and_labels(localized_dir, delocalized_dir):
 
     return np.array(data), np.array(labels)
 
-data, labels = load_images_and_labels(localized_dir, delocalized_dir)
+data, labels = load_images_and_labels(localized_dir, delocalized_dir) # Load images and labels
 
 # Split into training, validation, and test datasets
 X_train, X_temp, y_train, y_temp = train_test_split(data, labels, test_size=0.3, random_state=42)
@@ -86,15 +89,18 @@ class ViTClassifier(nn.Module):
     def forward(self, x):
         return self.model(x)
 
-model = ViTClassifier()
-model = model.to('cuda' if torch.cuda.is_available() else 'cpu')
+model = ViTClassifier() # Initialize the model
+model = model.to('cuda' if torch.cuda.is_available() else 'cpu') # Move model to GPU if available
 
 # Define the loss function and optimizer
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=1e-4)
+optimizer = optim.Adam(model.parameters(), lr=1e-4) 
 
 # Training loop
 def train_model(model, train_loader, val_loader, criterion, optimizer, num_epochs=10):
+    '''
+    Train the model and save the best model based on validation accuracy
+    '''
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     best_val_acc = 0.0
 
@@ -135,6 +141,9 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, num_epoch
     print(f"Best Validation Accuracy: {best_val_acc:.4f}")
 
 def evaluate_model(model, val_loader, criterion):
+    '''
+    Evaluate the model on the validation or test set
+    '''
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     model.eval()
     running_loss = 0.0
