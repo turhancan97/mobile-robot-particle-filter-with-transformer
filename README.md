@@ -57,9 +57,11 @@ Next, we convert the particle set into a binary image. This format effectively r
 
 We label the image by comparing the exact pose retrieved from the simulation with the estimated pose obtained from the particle distribution. Using a defined distance alpha, beta as a threshold, we can classify the robot's localization state and create a corresponding label, y, for the training sample.
 
-The formula used to label the image as localized or delocalized is provided below.
+The formula used to label the image as localized or delocalized is provided below. Besides, you can see example delocalized and localized images in the figure below.
 
 ![Labeling formula](docs/images/labeling-formula.png)
+
+![Localized and delocalized images](docs/images/localized-delocalized.png)
 
 To train the Vision Transformer model, we generate a dataset of training samples and labels. The model learns to classify the robot's state based on the particle distribution images and corresponding labels.
 
